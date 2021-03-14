@@ -1,10 +1,7 @@
 package com.BookIt.utilities;
 
 import java.sql.*;
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class DB_Utility {
     //make tha var available inside the whole class
@@ -29,9 +26,10 @@ public class DB_Utility {
      * static method to create Connection with valid url and username/password
      */
     public static void createConnection() {
-        String url = ConfigurationReader.getProperty("hr.database.url");
-        String username = ConfigurationReader.getProperty("hr.database.username");
-        String password = ConfigurationReader.getProperty("hr.database.password");
+        String url = ConfigurationReader.getProperty("dbUrl");
+        String username = ConfigurationReader.getProperty("dbUsername");
+        String password = ConfigurationReader.getProperty("dbPassword");
+
 //        try {
 //            con = DriverManager.getConnection(url, "hr", "hr");
 //            System.out.println("CONNECTION SUCCESSFUL");
@@ -70,7 +68,7 @@ public class DB_Utility {
     public static ResultSet runQuery(String query) {
         try {
             stmnt = con.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
-            rs = stmnt.executeQuery(query); //setting the value of ResultSet
+            rs = stmnt.executeQuery(query);//setting the value of ResultSet
             rsmd = rs.getMetaData(); //setting the value of ResultSet MetaData
         } catch (SQLException e) {
             System.err.println("Error while getting ResultSet" + e.getMessage());
@@ -325,6 +323,27 @@ public class DB_Utility {
 
         return getCellValue(1,1);
 
+    }
+
+    // List of Maps
+
+    public static List<Map<String, Object>> getQueryResultMap(String query) {
+        runQuery(query);
+        List<Map<String, Object>> rowList = new ArrayList<>();
+        try {
+            rsmd = rs.getMetaData();
+            while (rs.next()) {
+                Map<String, Object> colNameValueMap = new HashMap<>();
+                for (int i = 1; i <= rsmd.getColumnCount(); i++) {
+                    colNameValueMap.put(rsmd.getColumnName(i), rs.getObject(i));
+                }
+                rowList.add(colNameValueMap);
+            }
+        } catch (SQLException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        return rowList;
     }
 
 

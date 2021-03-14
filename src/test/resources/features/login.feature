@@ -11,4 +11,4 @@ Feature: Log in
       | username                        | password      |
       | bbursnoll8d@acquirethisname.com | johndillinger |
       | teachervasctoforstall@gmail.com | scottforstall |
-      | maynell8f@google.es             | besslebond    |
+      | emaynell8f@google.es             | besslebond    |
